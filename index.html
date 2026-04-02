@@ -15,10 +15,6 @@
     --accent2: #f7a56a;
     --text: #e8e4ff;
     --text-muted: #7a7898;
-    --fire: #ff6b35;
-    --water: #4fc3f7;
-    --wind: #b2f7b2;
-    --earth: #d4a055;
     --new: #f7e96a;
     --glow: rgba(124, 106, 247, 0.35);
   }
@@ -36,7 +32,6 @@
     user-select: none;
   }
 
-  /* Starfield background */
   body::before {
     content: '';
     position: fixed;
@@ -74,17 +69,8 @@
     letter-spacing: 0.05em;
   }
 
-  .stats {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-style: italic;
-  }
-
-  .stats span {
-    color: var(--accent);
-    font-style: normal;
-    font-weight: 400;
-  }
+  .stats { font-size: 13px; color: var(--text-muted); font-style: italic; }
+  .stats span { color: var(--accent); font-style: normal; }
 
   .clear-btn {
     background: none;
@@ -99,15 +85,8 @@
   }
   .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .main {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-  }
+  .main { flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1; }
 
-  /* SIDEBAR */
   .sidebar {
     width: 220px;
     min-width: 220px;
@@ -154,25 +133,12 @@
     line-height: 1.2;
   }
 
-  .sidebar-item:hover {
-    background: var(--surface2);
-    border-color: var(--border);
-  }
-
+  .sidebar-item:hover { background: var(--surface2); border-color: var(--border); }
   .sidebar-item:active { cursor: grabbing; }
-
   .sidebar-item .icon { font-size: 16px; flex-shrink: 0; }
+  .sidebar-item.is-new .name { color: var(--new); }
 
-  .sidebar-item.is-new .name {
-    color: var(--new);
-  }
-
-  /* CANVAS */
-  .canvas {
-    flex: 1;
-    position: relative;
-    overflow: hidden;
-  }
+  .canvas { flex: 1; position: relative; overflow: hidden; }
 
   .canvas-hint {
     position: absolute;
@@ -187,14 +153,8 @@
     line-height: 1.8;
   }
 
-  .canvas-hint .big {
-    font-size: 48px;
-    display: block;
-    margin-bottom: 8px;
-    opacity: 0.3;
-  }
+  .canvas-hint .big { font-size: 48px; display: block; margin-bottom: 8px; opacity: 0.3; }
 
-  /* ELEMENT TILES on canvas */
   .tile {
     position: absolute;
     display: flex;
@@ -226,6 +186,7 @@
 
   .tile.merging {
     animation: mergeFlash 0.4s ease forwards;
+    pointer-events: none;
   }
 
   @keyframes mergeFlash {
@@ -235,7 +196,6 @@
   }
 
   .tile .icon { font-size: 16px; }
-
   .tile .label { color: var(--text); }
 
   .tile.new-tile {
@@ -249,27 +209,6 @@
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
   }
 
-  /* COMBINING INDICATOR */
-  .combining-line {
-    position: absolute;
-    pointer-events: none;
-    z-index: 50;
-  }
-
-  /* LOADING INDICATOR */
-  .loading-tile {
-    border-style: dashed;
-    border-color: var(--accent);
-    opacity: 0.7;
-    animation: pulse 1s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
-  }
-
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 28px;
@@ -286,18 +225,10 @@
     pointer-events: none;
   }
 
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.first-discovery { border-color: var(--new); color: var(--new); box-shadow: 0 0 24px rgba(247,233,106,0.3); }
+  .toast.no-recipe { border-color: #333; color: var(--text-muted); }
 
-  .toast.first-discovery {
-    border-color: var(--new);
-    color: var(--new);
-    box-shadow: 0 0 24px rgba(247,233,106,0.3);
-  }
-
-  /* Context menu */
   .context-menu {
     position: fixed;
     background: var(--surface);
@@ -363,82 +294,83 @@
 
 <script>
 // ============================================================
-// ID ALGORITHM
-// New element IDs use a deterministic string hash of the
-// sorted combination pair, so "Fire+Water" always → same hash.
-// This hash is used as the cache key. Display IDs are
-// sequential integers starting at 5 (base elements = 1–4).
+// BASE ELEMENTS  (id 1–4, always unlocked)
 // ============================================================
 
-function pairHash(a, b) {
-  // Sort alphabetically so order doesn't matter
-  const key = [a, b].sort().join('|||');
-  // djb2 hash → hex string
-  let h = 5381;
-  for (let i = 0; i < key.length; i++) {
-    h = ((h << 5) + h) ^ key.charCodeAt(i);
-    h = h >>> 0; // keep unsigned 32-bit
-  }
-  return h.toString(16);
+const BASE_ELEMENTS = [
+  { id: 1, name: 'Brotherhood',  emoji: '🫂' },
+  { id: 2, name: 'Leadership',   emoji: '👑' },
+  { id: 3, name: 'Musicianship', emoji: '🎵' },
+  { id: 4, name: 'Service',      emoji: '🤝' },
+];
+
+// ============================================================
+// RECIPE TABLE
+// ─────────────────────────────────────────────────────────────
+// Format:  'Element A + Element B': { name: 'Result', emoji: '✨' }
+//
+// • Names are case-sensitive and must exactly match an element name.
+// • Order does NOT matter — the engine sorts them alphabetically
+//   before looking up, so 'A + B' and 'B + A' are the same key.
+// • Results can reference base elements OR other discovered ones.
+// • If no recipe exists the tiles bounce back with a "no recipe" notice.
+// ============================================================
+
+const RECIPES = {
+  // ── add your recipes here ──────────────────────────────────
+
+};
+
+// ============================================================
+// LOOKUP  (order-independent)
+// ============================================================
+
+function lookupRecipe(nameA, nameB) {
+  const key = [nameA, nameB].sort().join(' + ');
+  return RECIPES[key] || null;
 }
 
 // ============================================================
 // STATE
 // ============================================================
 
-const BASE_ELEMENTS = [
-  { id: 1, name: 'Fire',  emoji: '🔥', isNew: false },
-  { id: 2, name: 'Water', emoji: '💧', isNew: false },
-  { id: 3, name: 'Wind',  emoji: '🌬️', isNew: false },
-  { id: 4, name: 'Earth', emoji: '🌍', isNew: false },
-];
+let nextId = BASE_ELEMENTS.length + 1;
+let discovered = new Map();
+BASE_ELEMENTS.forEach(e => discovered.set(e.name, { ...e, isNew: false }));
 
-let nextId = 5;
-let discovered = new Map(); // name → element object
-let combinationCache = new Map(); // pairHash → element
-let canvasTiles = []; // { id, element, x, y, domEl }
-let nextTileId = 1;
-
-// Initialize discovered
-BASE_ELEMENTS.forEach(e => discovered.set(e.name, e));
-
-// ============================================================
-// DRAG STATE
-// ============================================================
-
-let dragging = null; // { tile, offsetX, offsetY }
+let canvasTiles = [];
+let nextTileId  = 1;
+let dragging    = null;
 let contextTarget = null;
 
 // ============================================================
-// RENDER SIDEBAR
+// SIDEBAR
 // ============================================================
 
 function renderSidebar() {
   const list = document.getElementById('elementsList');
   list.innerHTML = '';
-  const sorted = [...discovered.values()].sort((a, b) => a.id - b.id);
-  sorted.forEach(el => {
-    const div = document.createElement('div');
-    div.className = 'sidebar-item' + (el.isNew ? ' is-new' : '');
-    div.draggable = true;
-    div.innerHTML = `<span class="icon">${el.emoji}</span><span class="name">${el.name}</span>`;
-    div.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('elementName', el.name);
+  [...discovered.values()]
+    .sort((a, b) => a.id - b.id)
+    .forEach(el => {
+      const div = document.createElement('div');
+      div.className = 'sidebar-item' + (el.isNew ? ' is-new' : '');
+      div.draggable = true;
+      div.innerHTML = `<span class="icon">${el.emoji}</span><span class="name">${el.name}</span>`;
+      div.addEventListener('dragstart', e => e.dataTransfer.setData('elementName', el.name));
+      div.addEventListener('click', () =>
+        spawnTile(el, Math.random() * 400 + 80, Math.random() * 200 + 80)
+      );
+      list.appendChild(div);
     });
-    div.addEventListener('click', () => {
-      spawnTile(el, Math.random() * 400 + 80, Math.random() * 200 + 80);
-    });
-    list.appendChild(div);
-  });
   document.getElementById('discoveredCount').textContent = discovered.size;
 }
 
 // ============================================================
-// CANVAS DROP from sidebar
+// CANVAS DROP FROM SIDEBAR
 // ============================================================
 
 const canvas = document.getElementById('canvas');
-
 canvas.addEventListener('dragover', e => e.preventDefault());
 canvas.addEventListener('drop', e => {
   e.preventDefault();
@@ -455,55 +387,36 @@ canvas.addEventListener('drop', e => {
 // ============================================================
 
 function spawnTile(element, x, y, isNew = false) {
-  const tile = {
-    id: nextTileId++,
-    element,
-    x,
-    y,
-    domEl: null,
-  };
-
-  const dom = document.createElement('div');
-  dom.className = 'tile' + (isNew ? ' new-tile' : '');
-  dom.style.left = x + 'px';
-  dom.style.top = y + 'px';
-  dom.innerHTML = `<span class="icon">${element.emoji}</span><span class="label">${element.name}</span>`;
+  const tile = { id: nextTileId++, element, x, y, domEl: null };
+  const dom  = document.createElement('div');
+  dom.className    = 'tile' + (isNew ? ' new-tile' : '');
+  dom.style.left   = x + 'px';
+  dom.style.top    = y + 'px';
+  dom.innerHTML    = `<span class="icon">${element.emoji}</span><span class="label">${element.name}</span>`;
   dom.dataset.tileId = tile.id;
 
-  // Mouse drag
   dom.addEventListener('mousedown', e => {
     if (e.button !== 0) return;
     e.stopPropagation();
     const rect = dom.getBoundingClientRect();
-    dragging = {
-      tile,
-      offsetX: e.clientX - rect.left,
-      offsetY: e.clientY - rect.top,
-    };
+    dragging = { tile, offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top };
     dom.classList.add('dragging');
-    // Bring to front
     dom.style.zIndex = 100;
   });
 
-  // Right click
   dom.addEventListener('contextmenu', e => {
     e.preventDefault();
     contextTarget = tile;
     const menu = document.getElementById('contextMenu');
     menu.style.left = e.clientX + 'px';
-    menu.style.top = e.clientY + 'px';
+    menu.style.top  = e.clientY + 'px';
     menu.classList.add('show');
   });
 
   tile.domEl = dom;
   canvas.appendChild(dom);
   canvasTiles.push(tile);
-
-  // Hide hint
-  if (canvasTiles.length > 0) {
-    document.getElementById('canvasHint').style.display = 'none';
-  }
-
+  document.getElementById('canvasHint').style.display = canvasTiles.length ? 'none' : '';
   updateCount();
   return tile;
 }
@@ -511,12 +424,9 @@ function spawnTile(element, x, y, isNew = false) {
 function removeTile(tileId) {
   const idx = canvasTiles.findIndex(t => t.id === tileId);
   if (idx === -1) return;
-  const tile = canvasTiles[idx];
-  tile.domEl.remove();
+  canvasTiles[idx].domEl.remove();
   canvasTiles.splice(idx, 1);
-  if (canvasTiles.length === 0) {
-    document.getElementById('canvasHint').style.display = '';
-  }
+  document.getElementById('canvasHint').style.display = canvasTiles.length ? 'none' : '';
   updateCount();
 }
 
@@ -525,176 +435,93 @@ function updateCount() {
 }
 
 // ============================================================
-// MOUSE MOVE / UP
+// DRAG / DROP ON CANVAS
 // ============================================================
 
 document.addEventListener('mousemove', e => {
   if (!dragging) return;
   const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left - dragging.offsetX;
-  const y = e.clientY - rect.top - dragging.offsetY;
-  dragging.tile.x = Math.max(0, Math.min(x, rect.width - 120));
-  dragging.tile.y = Math.max(0, Math.min(y, rect.height - 40));
-  dragging.tile.domEl.style.left = dragging.tile.x + 'px';
-  dragging.tile.domEl.style.top = dragging.tile.y + 'px';
+  const x = Math.max(0, Math.min(e.clientX - rect.left - dragging.offsetX, rect.width  - 160));
+  const y = Math.max(0, Math.min(e.clientY - rect.top  - dragging.offsetY, rect.height -  40));
+  dragging.tile.x = x;
+  dragging.tile.y = y;
+  dragging.tile.domEl.style.left = x + 'px';
+  dragging.tile.domEl.style.top  = y + 'px';
 });
 
-document.addEventListener('mouseup', e => {
+document.addEventListener('mouseup', () => {
   if (!dragging) return;
-  const droppedTile = dragging.tile;
-  dragging.tile.domEl.classList.remove('dragging');
-  dragging.tile.domEl.style.zIndex = '';
+  const dropped = dragging.tile;
+  dropped.domEl.classList.remove('dragging');
+  dropped.domEl.style.zIndex = '';
   dragging = null;
-
-  // Check overlap with another tile
-  const target = findOverlap(droppedTile);
-  if (target) {
-    combine(droppedTile, target);
-  }
+  const target = findOverlap(dropped);
+  if (target) combine(dropped, target);
 });
 
 function findOverlap(tile) {
   const tRect = tile.domEl.getBoundingClientRect();
-  const tCX = tRect.left + tRect.width / 2;
-  const tCY = tRect.top + tRect.height / 2;
-
+  const cx = tRect.left + tRect.width  / 2;
+  const cy = tRect.top  + tRect.height / 2;
   for (const other of canvasTiles) {
     if (other.id === tile.id) continue;
-    const oRect = other.domEl.getBoundingClientRect();
-    if (
-      tCX > oRect.left && tCX < oRect.right &&
-      tCY > oRect.top && tCY < oRect.bottom
-    ) {
-      return other;
-    }
+    const r = other.domEl.getBoundingClientRect();
+    if (cx > r.left && cx < r.right && cy > r.top && cy < r.bottom) return other;
   }
   return null;
 }
 
-// Close context menu on click elsewhere
-document.addEventListener('click', () => {
-  document.getElementById('contextMenu').classList.remove('show');
-});
+document.addEventListener('click', () =>
+  document.getElementById('contextMenu').classList.remove('show')
+);
 
 // ============================================================
 // COMBINE
 // ============================================================
 
-const pendingCombos = new Set(); // prevent double-combos
+const pending = new Set();
 
-async function combine(tileA, tileB) {
+function combine(tileA, tileB) {
   const key = [tileA.id, tileB.id].sort().join('-');
-  if (pendingCombos.has(key)) return;
-  pendingCombos.add(key);
+  if (pending.has(key)) return;
+  pending.add(key);
 
-  const nameA = tileA.element.name;
-  const nameB = tileB.element.name;
-  const hash = pairHash(nameA, nameB);
-
-  // Merge animation
-  tileA.domEl.classList.add('merging');
-  tileB.domEl.classList.add('merging');
-
-  // Remember positions before removing
+  const nameA  = tileA.element.name;
+  const nameB  = tileB.element.name;
   const spawnX = (tileA.x + tileB.x) / 2;
   const spawnY = (tileA.y + tileB.y) / 2;
+  const recipe = lookupRecipe(nameA, nameB);
+
+  tileA.domEl.classList.add('merging');
+  tileB.domEl.classList.add('merging');
 
   setTimeout(() => {
     removeTile(tileA.id);
     removeTile(tileB.id);
-  }, 350);
 
-  // Check cache
-  if (combinationCache.has(hash)) {
-    const cached = combinationCache.get(hash);
-    setTimeout(() => {
-      spawnTile(cached, spawnX, spawnY, false);
-      pendingCombos.delete(key);
-    }, 450);
-    return;
-  }
-
-  // Show loading tile
-  let loadingTile = null;
-  setTimeout(() => {
-    if (pendingCombos.has(key)) {
-      const loadingEl = { id: -1, name: '...', emoji: '✨' };
-      loadingTile = spawnTile(loadingEl, spawnX, spawnY, false);
-      loadingTile.domEl.classList.add('loading-tile');
-    }
-  }, 450);
-
-  // Call Claude API
-  try {
-    const result = await callClaudeAPI(nameA, nameB);
-    combinationCache.set(hash, result);
-
-    // Is it a new discovery?
-    const isFirstDiscovery = !discovered.has(result.name);
-    if (isFirstDiscovery) {
-      result.id = nextId++;
-      result.isNew = true;
-      discovered.set(result.name, result);
-      renderSidebar();
-      showToast(`✨ First discovery: ${result.emoji} ${result.name}!`, true);
+    if (!recipe) {
+      // No recipe — bounce both back
+      spawnTile(tileA.element, spawnX - 70, spawnY);
+      spawnTile(tileB.element, spawnX + 70, spawnY);
+      showToast(`No recipe for ${nameA} + ${nameB}`, false, true);
     } else {
-      result.isNew = false;
+      const isFirst = !discovered.has(recipe.name);
+      let resultEl;
+
+      if (isFirst) {
+        resultEl = { id: nextId++, name: recipe.name, emoji: recipe.emoji, isNew: true };
+        discovered.set(recipe.name, resultEl);
+        renderSidebar();
+        showToast(`✨ First discovery: ${recipe.emoji} ${recipe.name}!`, true);
+      } else {
+        resultEl = { ...discovered.get(recipe.name), isNew: false };
+      }
+
+      spawnTile(resultEl, spawnX, spawnY, isFirst);
     }
 
-    if (loadingTile) removeTile(loadingTile.id);
-    spawnTile(result, spawnX, spawnY, isFirstDiscovery);
-  } catch (err) {
-    if (loadingTile) removeTile(loadingTile.id);
-    showToast('✗ Combination failed — try again');
-  }
-
-  pendingCombos.delete(key);
-}
-
-// ============================================================
-// CLAUDE API CALL
-// ============================================================
-
-async function callClaudeAPI(elementA, elementB) {
-  const prompt = `You are the combination engine for a game called Infinite Craft.
-The player combines two elements to create a new one.
-
-Rules:
-- Respond with ONLY a JSON object: {"emoji": "🔥", "name": "Steam"}
-- The name should be 1-3 words, creative, logical
-- Choose an appropriate emoji
-- Be creative but sensible (Fire + Water = Steam, Fire + Earth = Lava, etc.)
-- The result can be anything: objects, concepts, mythical things, phenomena
-- No explanation, no markdown, just the raw JSON
-
-Combine: "${elementA}" + "${elementB}"`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 100,
-      messages: [{ role: "user", content: prompt }]
-    })
-  });
-
-  if (!response.ok) throw new Error('API error');
-  const data = await response.json();
-  const text = data.content.map(b => b.text || '').join('').trim();
-
-  // Strip possible markdown fences
-  const clean = text.replace(/```json|```/g, '').trim();
-  const parsed = JSON.parse(clean);
-
-  if (!parsed.name || !parsed.emoji) throw new Error('Bad response');
-
-  // Check if we already discovered it
-  if (discovered.has(parsed.name)) {
-    return discovered.get(parsed.name);
-  }
-
-  return { id: null, name: parsed.name, emoji: parsed.emoji, isNew: true };
+    pending.delete(key);
+  }, 420);
 }
 
 // ============================================================
@@ -721,17 +548,17 @@ function deleteTile() {
 }
 
 let toastTimer;
-function showToast(msg, firstDiscovery = false) {
+function showToast(msg, firstDiscovery = false, noRecipe = false) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
-  toast.className = 'toast show' + (firstDiscovery ? ' first-discovery' : '');
+  toast.className   = 'toast show'
+    + (firstDiscovery ? ' first-discovery' : '')
+    + (noRecipe       ? ' no-recipe'       : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// ============================================================
-// INIT
-// ============================================================
+// init
 renderSidebar();
 </script>
 </body>

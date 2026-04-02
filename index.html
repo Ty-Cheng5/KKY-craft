@@ -3,28 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>∞ Infinite Craft</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<title>KKΨ Craft</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+SC:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --surface: #12121c;
-    --surface2: #1a1a28;
-    --border: #2a2a40;
-    --accent: #7c6af7;
-    --accent2: #f7a56a;
-    --text: #e8e4ff;
-    --text-muted: #7a7898;
-    --new: #f7e96a;
-    --glow: rgba(124, 106, 247, 0.35);
+    --navy:    #0b1420;
+    --navy2:   #111e30;
+    --navy3:   #182840;
+    --gold:    #c9a84c;
+    --gold2:   #e8c96a;
+    --gold-dim: #7a6228;
+    --cream:   #f0e8d0;
+    --cream2:  #c8bc9e;
+    --border:  #1e3050;
+    --border2: #2a4060;
+    --glow:    rgba(201, 168, 76, 0.3);
+    --new:     #6ae8a0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Crimson Pro', Georgia, serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    background: var(--navy);
+    color: var(--cream);
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -32,19 +34,41 @@
     user-select: none;
   }
 
+  /* Subtle linen texture overlay */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image:
-      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
-      radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 45% 80%, rgba(255,255,255,0.25) 0%, transparent 100%),
-      radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.35) 0%, transparent 100%),
-      radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.2) 0%, transparent 100%);
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.012) 2px,
+        rgba(255,255,255,0.012) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(255,255,255,0.008) 3px,
+        rgba(255,255,255,0.008) 6px
+      );
     pointer-events: none;
     z-index: 0;
   }
+
+  /* Radial vignette */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(5,10,18,0.7) 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ─────────────────────────────────────────────── */
 
   header {
     position: relative;
@@ -52,59 +76,127 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 24px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,10,15,0.9);
-    backdrop-filter: blur(12px);
+    padding: 0 28px;
+    height: 58px;
+    border-bottom: 1px solid var(--border2);
+    background: linear-gradient(180deg, #0d1b30 0%, #0b1420 100%);
+    box-shadow: 0 1px 0 rgba(201,168,76,0.15), 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  /* thin gold stripe at very top */
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
 
   .logo {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 18px;
+    font-family: 'Cormorant SC', serif;
+    font-size: 22px;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-shadow: 0 0 28px rgba(201,168,76,0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  .stats { font-size: 13px; color: var(--text-muted); font-style: italic; }
-  .stats span { color: var(--accent); font-style: normal; }
+  .logo-crest {
+    font-size: 20px;
+    opacity: 0.85;
+  }
+
+  .logo-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--gold-dim);
+    opacity: 0.5;
+  }
+
+  .logo-sub {
+    font-family: 'EB Garamond', serif;
+    font-size: 13px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--cream2);
+    letter-spacing: 0.04em;
+  }
+
+  .stats {
+    font-size: 13px;
+    color: var(--cream2);
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+
+  .stats span {
+    color: var(--gold2);
+    font-style: normal;
+    font-weight: 600;
+  }
 
   .clear-btn {
     background: none;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    padding: 5px 14px;
-    border-radius: 20px;
+    border: 1px solid var(--gold-dim);
+    color: var(--cream2);
+    padding: 5px 16px;
+    border-radius: 2px;
     cursor: pointer;
-    font-family: 'Crimson Pro', serif;
-    font-size: 13px;
+    font-family: 'Cormorant SC', serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
     transition: all 0.2s;
   }
-  .clear-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .clear-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    box-shadow: 0 0 12px rgba(201,168,76,0.15);
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────── */
 
   .main { flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1; }
 
+  /* ── SIDEBAR ─────────────────────────────────────────────── */
+
   .sidebar {
-    width: 220px;
-    min-width: 220px;
-    background: rgba(18,18,28,0.95);
-    border-right: 1px solid var(--border);
+    width: 230px;
+    min-width: 230px;
+    background: linear-gradient(180deg, #0d1b30 0%, #0b1824 100%);
+    border-right: 1px solid var(--border2);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.3);
   }
 
   .sidebar-header {
-    padding: 14px 16px 10px;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--border2);
     flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sidebar-title {
+    font-family: 'Cormorant SC', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .sidebar-sub {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--cream2);
+    opacity: 0.6;
   }
 
   .elements-list {
@@ -113,19 +205,19 @@
     padding: 10px 8px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
   }
 
-  .elements-list::-webkit-scrollbar { width: 4px; }
+  .elements-list::-webkit-scrollbar { width: 3px; }
   .elements-list::-webkit-scrollbar-track { background: transparent; }
-  .elements-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .elements-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
   .sidebar-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    border-radius: 8px;
+    gap: 9px;
+    padding: 7px 11px;
+    border-radius: 3px;
     cursor: grab;
     border: 1px solid transparent;
     transition: all 0.15s;
@@ -133,12 +225,47 @@
     line-height: 1.2;
   }
 
-  .sidebar-item:hover { background: var(--surface2); border-color: var(--border); }
+  .sidebar-item:hover {
+    background: rgba(201,168,76,0.07);
+    border-color: var(--border2);
+  }
+
   .sidebar-item:active { cursor: grabbing; }
-  .sidebar-item .icon { font-size: 16px; flex-shrink: 0; }
+  .sidebar-item .icon { font-size: 15px; flex-shrink: 0; }
+  .sidebar-item .name { color: var(--cream); }
   .sidebar-item.is-new .name { color: var(--new); }
 
-  .canvas { flex: 1; position: relative; overflow: hidden; }
+  /* divider line between base + discovered */
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border2);
+    margin: 6px 8px;
+    opacity: 0.6;
+  }
+
+  /* ── CANVAS ─────────────────────────────────────────────── */
+
+  .canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 75% 70%, rgba(11,20,32,0.6) 0%, transparent 70%),
+      var(--navy);
+  }
+
+  /* subtle diagonal grid */
+  .canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
 
   .canvas-hint {
     position: absolute;
@@ -146,42 +273,73 @@
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    color: var(--text-muted);
+    color: var(--cream2);
     pointer-events: none;
-    font-style: italic;
-    font-size: 16px;
-    line-height: 1.8;
+    opacity: 0.35;
+    line-height: 2;
   }
 
-  .canvas-hint .big { font-size: 48px; display: block; margin-bottom: 8px; opacity: 0.3; }
+  .canvas-hint .crest {
+    font-family: 'Cormorant SC', serif;
+    font-size: 56px;
+    display: block;
+    color: var(--gold);
+    margin-bottom: 4px;
+    opacity: 0.4;
+  }
+
+  .canvas-hint .hint-title {
+    font-family: 'Cormorant SC', serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    color: var(--cream);
+  }
+
+  .canvas-hint .hint-sub {
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* ── TILES ─────────────────────────────────────────────── */
 
   .tile {
     position: absolute;
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    gap: 8px;
+    padding: 7px 15px;
+    background: linear-gradient(135deg, #13223a 0%, #0f1c30 100%);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
     cursor: grab;
     font-size: 14px;
     white-space: nowrap;
     transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
     z-index: 2;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  /* top gold sheen line */
+  .tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    border-radius: 1px;
   }
 
   .tile:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 18px var(--glow), 0 2px 12px rgba(0,0,0,0.4);
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 16px var(--glow), 0 2px 10px rgba(0,0,0,0.5);
   }
 
   .tile.dragging {
     cursor: grabbing;
     z-index: 100;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px var(--glow);
-    transform: scale(1.05);
+    border-color: var(--gold);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 24px var(--glow);
+    transform: scale(1.04) rotate(0.5deg);
   }
 
   .tile.merging {
@@ -190,54 +348,74 @@
   }
 
   @keyframes mergeFlash {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); box-shadow: 0 0 40px var(--accent), 0 0 80px rgba(124,106,247,0.5); }
+    0%   { transform: scale(1); opacity: 1; }
+    40%  { transform: scale(1.25); box-shadow: 0 0 40px rgba(201,168,76,0.7), 0 0 80px rgba(201,168,76,0.3); border-color: var(--gold2); }
     100% { transform: scale(0); opacity: 0; }
   }
 
-  .tile .icon { font-size: 16px; }
-  .tile .label { color: var(--text); }
+  .tile .icon  { font-size: 15px; }
+  .tile .label { color: var(--cream); font-size: 14px; }
 
   .tile.new-tile {
     border-color: var(--new);
-    box-shadow: 0 0 18px rgba(247,233,106,0.3);
+    box-shadow: 0 0 20px rgba(106,232,160,0.25);
     animation: newPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 
   @keyframes newPop {
-    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    0%   { transform: scale(0) rotate(-8deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg);  opacity: 1; }
   }
+
+  /* ── TOAST ─────────────────────────────────────────────── */
 
   .toast {
     position: fixed;
     bottom: 28px;
     left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 10px 20px;
-    border-radius: 24px;
+    transform: translateX(-50%) translateY(16px);
+    background: var(--navy2);
+    border: 1px solid var(--border2);
+    padding: 9px 22px;
+    border-radius: 2px;
     font-size: 14px;
+    font-style: italic;
     opacity: 0;
-    transition: all 0.3s;
+    transition: all 0.25s;
     z-index: 999;
     pointer-events: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    letter-spacing: 0.02em;
   }
 
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.first-discovery { border-color: var(--new); color: var(--new); box-shadow: 0 0 24px rgba(247,233,106,0.3); }
-  .toast.no-recipe { border-color: #333; color: var(--text-muted); }
+
+  .toast.first-discovery {
+    border-color: var(--gold);
+    color: var(--gold2);
+    box-shadow: 0 0 24px rgba(201,168,76,0.25), 0 4px 20px rgba(0,0,0,0.5);
+    font-style: normal;
+    font-family: 'Cormorant SC', serif;
+    letter-spacing: 0.06em;
+  }
+
+  .toast.no-recipe {
+    border-color: var(--border2);
+    color: var(--cream2);
+    opacity: 0.7;
+  }
+
+  /* ── CONTEXT MENU ───────────────────────────────────────── */
 
   .context-menu {
     position: fixed;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 6px;
+    background: var(--navy2);
+    border: 1px solid var(--border2);
+    border-radius: 3px;
+    padding: 5px;
     z-index: 500;
     display: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   }
 
   .context-menu.show { display: block; }
@@ -247,40 +425,48 @@
     width: 100%;
     background: none;
     border: none;
-    color: var(--text);
-    padding: 7px 14px;
+    color: var(--cream);
+    padding: 7px 16px;
     text-align: left;
     cursor: pointer;
-    border-radius: 6px;
-    font-family: 'Crimson Pro', serif;
+    border-radius: 2px;
+    font-family: 'EB Garamond', serif;
     font-size: 14px;
+    letter-spacing: 0.02em;
     transition: background 0.1s;
   }
 
-  .context-menu button:hover { background: var(--surface2); }
-  .context-menu button.danger { color: #ff6b6b; }
+  .context-menu button:hover { background: rgba(201,168,76,0.08); }
+  .context-menu button.danger { color: #e07070; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">∞ Infinite Craft</div>
-  <div class="stats">
-    <span id="discoveredCount">4</span> elements discovered · <span id="canvasCount">0</span> on canvas
+  <div class="logo">
+    <span>KKΨ Craft</span>
+    <span class="logo-sub">— Brotherhood Edition</span>
   </div>
-  <button class="clear-btn" onclick="clearCanvas()">Clear Canvas</button>
+  <div class="stats">
+    <span id="discoveredCount">15</span> elements known · <span id="canvasCount">0</span> on the board
+  </div>
+  <button class="clear-btn" onclick="clearCanvas()">Clear Board</button>
 </header>
 
 <div class="main">
   <div class="sidebar">
-    <div class="sidebar-header">Elements</div>
+    <div class="sidebar-header">
+      <div class="sidebar-title">The Codex</div>
+      <div class="sidebar-sub">drag to the board to combine</div>
+    </div>
     <div class="elements-list" id="elementsList"></div>
   </div>
+
   <div class="canvas" id="canvas">
     <div class="canvas-hint" id="canvasHint">
-      <span class="big">✦</span>
-      Drag elements onto the canvas<br>
-      <small>Drop one onto another to combine</small>
+      <span class="crest">ΚΚΨ</span>
+      <div class="hint-title">The Board Awaits</div>
+      <div class="hint-sub">drag elements here &amp; combine them</div>
     </div>
   </div>
 </div>
@@ -289,84 +475,78 @@
 
 <div class="context-menu" id="contextMenu">
   <button onclick="duplicateTile()">Duplicate</button>
-  <button onclick="deleteTile()" class="danger">Delete</button>
+  <button onclick="deleteTile()" class="danger">Remove</button>
 </div>
 
 <script>
 // ============================================================
-// BASE ELEMENTS  (id 1–4, always unlocked)
+// BASE ELEMENTS
 // ============================================================
 
 const BASE_ELEMENTS = [
-  { id: 1, name: 'Brotherhood', emoji: '🫂' },
-  { id: 2, name: 'Leadership', emoji: '👑' },
-  { id: 3, name: 'Musicianship', emoji: '🎵' },
-  { id: 4, name: 'Service', emoji: '🤝' },
+  { id: 1,  name: 'Brotherhood',  emoji: '🫂' },
+  { id: 2,  name: 'Leadership',   emoji: '👑' },
+  { id: 3,  name: 'Musicianship', emoji: '🎵' },
+  { id: 4,  name: 'Service',      emoji: '🤝' },
 
-  { id: 5, name: 'Late', emoji: '⏰' },
-  { id: 6, name: 'Brain', emoji: '🧠' },
-  { id: 14, name: 'Table Tennis', emoji: '🏓' },
-  { id: 15, name: 'Hockey', emoji: '🥅' },
+  { id: 5,  name: 'Late',         emoji: '⏰' },
+  { id: 6,  name: 'Brain',        emoji: '🧠' },
+  { id: 7,  name: 'Table Tennis', emoji: '🏓' },
+  { id: 8,  name: 'Hockey',       emoji: '🥅' },
 
-  { id: 7, name: 'Calendar', emoji: '🗓️' },
-  { id: 8, name: 'Teacher', emoji: '🧑‍🏫' },
-  { id: 9, name: 'Megaphone', emoji: '📣'},
+  { id: 9,  name: 'Calendar',     emoji: '🗓️' },
+  { id: 10, name: 'Teacher',      emoji: '🧑‍🏫' },
+  { id: 11, name: 'Megaphone',    emoji: '📣' },
 
-  { id: 10, name: 'Iced Tea', emoji: '🧊🍵' },
-  { id: 11, name: 'Sushi', emoji: '🍣' },
-  { id: 12, name: 'Panda Express', emoji: '🍜' },
+  { id: 12, name: 'Iced Tea',     emoji: '🧊🍵' },
+  { id: 13, name: 'Sushi',        emoji: '🍣' },
+  { id: 14, name: 'Panda Express',emoji: '🍜' },
 
-  { id: 13, name: 'Wisdom', emoji: '📜' },
-
+  { id: 15, name: 'Wisdom',       emoji: '📜' },
 ];
 
 // ============================================================
 // RECIPE TABLE
-// ─────────────────────────────────────────────────────────────
-// Format:  'Element A + Element B': { name: 'Result', emoji: '✨' }
-//
-// • Names are case-sensitive and must exactly match an element name.
-// • Order does NOT matter — the engine sorts them alphabetically
-//   before looking up, so 'A + B' and 'B + A' are the same key.
-// • Results can reference base elements OR other discovered ones.
-// • If no recipe exists the tiles bounce back with a "no recipe" notice.
+// Keys are always "A + B" sorted A→Z alphabetically.
 // ============================================================
 
 const RECIPES = {
-  // ── add your recipes here ──────────────────────────────────
-  'Brotherhood + Service': {name: 'Brotherhood & Service', emoji: '🤝'},
-  'Leadership + Musicianship': {name: 'Leadership & Musicianship', emoji: '🤝'},
-  'Brotherhood & Service + Leadership & Musicianship': {name: 'Brother', emoji: 'KK𝚿'},
-  
-  'Late + Brother' : {name: 'Ty', emoji: '📸'},
-  'Brain + Brother' : {name: 'Éowyn', emoji: '🧠'},
-  'Table Tennis + Brother' : {name: 'Jiayu', emoji: '🌀🏓'},
-  'Hockey + Brother' : {name: 'Billy', emoji: '🏒'},
+  // ── Tier 1: pillars ─────────────────────────────────────────
+  'Brotherhood + Service':                             { name: 'Brotherhood & Service',     emoji: '🤝' },
+  'Leadership + Musicianship':                         { name: 'Leadership & Musicianship', emoji: '🎵' },
+  'Brotherhood & Service + Leadership & Musicianship': { name: 'Brother',                   emoji: 'KK𝚿' },
 
-  'Brother + Brother' : {name: 'Election', emoji: '🗳️'},
-  'Election + Brother' : {name: 'Vice President', emoji: '🎩'},
-  'Vice President + Vice President' : {name: 'Dev! (Our President)', emoji: '🎩'},
+  // ── Tier 2: brothers ────────────────────────────────────────
+  'Brain + Brother':           { name: 'Éowyn',        emoji: '🧠' },
+  'Brother + Hockey':          { name: 'Billy',         emoji: '🏒' },
+  'Brother + Iced Tea':        { name: 'Dr. Pasquale', emoji: '🍵' },
+  'Brother + Late':            { name: 'Ty',            emoji: '📸' },
+  'Brother + Panda Express':   { name: 'Dr. Fettig',   emoji: '🍜' },
+  'Brother + Sushi':           { name: 'Dr. Frey',     emoji: '🏀' },
+  'Brother + Table Tennis':    { name: 'Jiayu',         emoji: '🌀🏓' },
 
-  'Vice President + Calendar' : {name: 'Tony! (Vice President of Programs)', emoji: '📸'},
-  'Vice President + Teacher' : {name: 'Jackson! (Vice President of Membership)', emoji: '🏀'},
-  'Vice President + Megaphone' : {name: 'Ella! (Vice President of Recruitment )', emoji: '🥎'},
+  // ── Tier 3: elections ───────────────────────────────────────
+  'Brother + Brother':               { name: 'Election',             emoji: '🗳️' },
+  'Brother + Election':              { name: 'Vice President',       emoji: '🎩' },
+  'Vice President + Vice President': { name: 'Dev! (Our President)', emoji: '🎩' },
 
-  'Iced Tea + Brother' : {name: 'Dr. Pasquale', emoji: '🍵'},
-  'Sushi + Brother' : {name: 'Dr. Frey', emoji: '🏀'},
-  'Panda Express + Brother' : {name: 'Dr. Fettig', emoji: '🍜'},
+  // ── Tier 4: VP roles ────────────────────────────────────────
+  'Calendar + Vice President':  { name: 'Tony! (Vice President of Programs)',     emoji: '📸' },
+  'Megaphone + Vice President': { name: 'Ella! (Vice President of Recruitment)',  emoji: '🥎' },
+  'Teacher + Vice President':   { name: 'Jackson! (Vice President of Membership)', emoji: '🏀' },
 
-  'Wisdom + Wisdom' : {name: 'Guiding Spirit', emoji: '👻🐻'},
-  'Guiding Spirit + Brother' : {name: 'Bo', emoji: '👻'},
-  
-
+  // ── Tier 5: wisdom ──────────────────────────────────────────
+  'Wisdom + Wisdom':           { name: 'Guiding Spirit', emoji: '👻🐻' },
+  'Brother + Guiding Spirit':  { name: 'Bo',             emoji: '👻' },
 };
 
 // ============================================================
-// LOOKUP  (order-independent)
+// LOOKUP
 // ============================================================
 
 function lookupRecipe(nameA, nameB) {
   const key = [nameA, nameB].sort().join(' + ');
+  console.log(`Trying: "${key}"`);
   return RECIPES[key] || null;
 }
 
@@ -374,13 +554,13 @@ function lookupRecipe(nameA, nameB) {
 // STATE
 // ============================================================
 
-let nextId = BASE_ELEMENTS.length + 1;
+let nextId = BASE_ELEMENTS.reduce((max, e) => Math.max(max, e.id), 0) + 1;
 let discovered = new Map();
 BASE_ELEMENTS.forEach(e => discovered.set(e.name, { ...e, isNew: false }));
 
-let canvasTiles = [];
-let nextTileId  = 1;
-let dragging    = null;
+let canvasTiles   = [];
+let nextTileId    = 1;
+let dragging      = null;
 let contextTarget = null;
 
 // ============================================================
@@ -390,20 +570,33 @@ let contextTarget = null;
 function renderSidebar() {
   const list = document.getElementById('elementsList');
   list.innerHTML = '';
-  [...discovered.values()]
-    .sort((a, b) => a.id - b.id)
-    .forEach(el => {
-      const div = document.createElement('div');
-      div.className = 'sidebar-item' + (el.isNew ? ' is-new' : '');
-      div.draggable = true;
-      div.innerHTML = `<span class="icon">${el.emoji}</span><span class="name">${el.name}</span>`;
-      div.addEventListener('dragstart', e => e.dataTransfer.setData('elementName', el.name));
-      div.addEventListener('click', () =>
-        spawnTile(el, Math.random() * 400 + 80, Math.random() * 200 + 80)
-      );
-      list.appendChild(div);
-    });
+
+  const all = [...discovered.values()].sort((a, b) => a.id - b.id);
+  const base = all.filter(e => e.id <= 15);
+  const found = all.filter(e => e.id > 15);
+
+  base.forEach(el => list.appendChild(makeSidebarItem(el)));
+
+  if (found.length) {
+    const div = document.createElement('div');
+    div.className = 'sidebar-divider';
+    list.appendChild(div);
+    found.forEach(el => list.appendChild(makeSidebarItem(el)));
+  }
+
   document.getElementById('discoveredCount').textContent = discovered.size;
+}
+
+function makeSidebarItem(el) {
+  const div = document.createElement('div');
+  div.className = 'sidebar-item' + (el.isNew ? ' is-new' : '');
+  div.draggable = true;
+  div.innerHTML = `<span class="icon">${el.emoji}</span><span class="name">${el.name}</span>`;
+  div.addEventListener('dragstart', e => e.dataTransfer.setData('elementName', el.name));
+  div.addEventListener('click', () =>
+    spawnTile(el, Math.random() * 400 + 80, Math.random() * 200 + 80)
+  );
+  return div;
 }
 
 // ============================================================
@@ -429,10 +622,10 @@ canvas.addEventListener('drop', e => {
 function spawnTile(element, x, y, isNew = false) {
   const tile = { id: nextTileId++, element, x, y, domEl: null };
   const dom  = document.createElement('div');
-  dom.className    = 'tile' + (isNew ? ' new-tile' : '');
-  dom.style.left   = x + 'px';
-  dom.style.top    = y + 'px';
-  dom.innerHTML    = `<span class="icon">${element.emoji}</span><span class="label">${element.name}</span>`;
+  dom.className  = 'tile' + (isNew ? ' new-tile' : '');
+  dom.style.left = x + 'px';
+  dom.style.top  = y + 'px';
+  dom.innerHTML  = `<span class="icon">${element.emoji}</span><span class="label">${element.name}</span>`;
   dom.dataset.tileId = tile.id;
 
   dom.addEventListener('mousedown', e => {
@@ -475,13 +668,13 @@ function updateCount() {
 }
 
 // ============================================================
-// DRAG / DROP ON CANVAS
+// DRAG
 // ============================================================
 
 document.addEventListener('mousemove', e => {
   if (!dragging) return;
   const rect = canvas.getBoundingClientRect();
-  const x = Math.max(0, Math.min(e.clientX - rect.left - dragging.offsetX, rect.width  - 160));
+  const x = Math.max(0, Math.min(e.clientX - rect.left - dragging.offsetX, rect.width  - 180));
   const y = Math.max(0, Math.min(e.clientY - rect.top  - dragging.offsetY, rect.height -  40));
   dragging.tile.x = x;
   dragging.tile.y = y;
@@ -540,10 +733,9 @@ function combine(tileA, tileB) {
     removeTile(tileB.id);
 
     if (!recipe) {
-      // No recipe — bounce both back
       spawnTile(tileA.element, spawnX - 70, spawnY);
       spawnTile(tileB.element, spawnX + 70, spawnY);
-      showToast(`No recipe for ${nameA} + ${nameB}`, false, true);
+      showToast(`No bond between ${nameA} & ${nameB}`, false, true);
     } else {
       const isFirst = !discovered.has(recipe.name);
       let resultEl;
@@ -552,7 +744,7 @@ function combine(tileA, tileB) {
         resultEl = { id: nextId++, name: recipe.name, emoji: recipe.emoji, isNew: true };
         discovered.set(recipe.name, resultEl);
         renderSidebar();
-        showToast(`✨ First discovery: ${recipe.emoji} ${recipe.name}!`, true);
+        showToast(`✦ Discovered: ${recipe.emoji} ${recipe.name}`, true);
       } else {
         resultEl = { ...discovered.get(recipe.name), isNew: false };
       }
@@ -595,10 +787,9 @@ function showToast(msg, firstDiscovery = false, noRecipe = false) {
     + (firstDiscovery ? ' first-discovery' : '')
     + (noRecipe       ? ' no-recipe'       : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
-// init
 renderSidebar();
 </script>
 </body>
